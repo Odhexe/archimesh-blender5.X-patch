@@ -1,75 +1,90 @@
 # Archimesh Blender 5.x Compatibility Patch
 
-This patch fixes missing parameter panels in Archimesh 1.2.5 when used with Blender 5.x.
+A compatibility patch for **Archimesh 1.2.5** that restores the missing parameter panels when using **Blender 5.x**.
 
 ## Problem
 
-After creating a Room, Door, Window or other Archimesh object, the parameter panel never appears.
+On Blender 5.x, creating Archimesh objects such as:
 
-Instead, only this message is shown:
+- Room
+- Door
+- Window
+- Window Panel
+
+only displays:
 
 > Use Properties panel (N) to define parms
 
-Selecting the object still does not show any editable properties.
+Selecting the object does not show any editable parameters.
 
 ---
 
 ## Cause
 
-Archimesh checks whether an object is an Archimesh object using code like:
+Archimesh checks whether an object is an Archimesh object using code such as:
 
 ```python
 if 'RoomGenerator' in obj:
 ```
 
-Blender 5.x changed the behavior of CollectionProperty.
-
-The expression above now returns False even when:
-
-```python
-len(obj.RoomGenerator) == 1
-```
-
-As a result:
-
-- Room panel never appears
-- Door panel never appears
-- Window panel never appears
-- Window Panel editor never appears
+In Blender 5.x this check no longer works correctly for `CollectionProperty`, causing the editor panels to remain hidden.
 
 ---
 
-## Solution
+## What this patch does
 
-Replace checks like:
+The patch replaces the old compatibility checks with Blender 5.x compatible ones.
 
-```python
-if 'RoomGenerator' in obj:
-```
+It automatically:
 
-with
-
-```python
-if hasattr(obj, "RoomGenerator") and len(obj.RoomGenerator) > 0:
-```
-
-and replace
-
-```python
-if 'RoomGenerator' not in obj:
-```
-
-with
-
-```python
-if not hasattr(obj, "RoomGenerator") or len(obj.RoomGenerator) == 0:
-```
-
-The included patcher performs these replacements automatically.
+- Creates backups (`.bak`)
+- Patches all supported generator checks
+- Saves the modified files
 
 ---
 
-## Usage
+# Installation
+
+## Step 1
+
+Download **Archimesh 1.2.5**.
+
+## Step 2
+
+Extract the ZIP.
+
+Example:
+
+```
+add-on-archimesh-v1.2.5/
+```
+
+## Step 3
+
+Place `patch_archimesh.py` inside the extracted folder.
+
+Example:
+
+```
+add-on-archimesh-v1.2.5/
+│
+├── patch_archimesh.py
+├── achm_room_maker.py
+├── achm_door_maker.py
+├── ...
+```
+
+## Step 4
+
+Edit the `ROOT` variable inside `patch_archimesh.py` if necessary.
+
+Example:
+
+```python
+ROOT = Path(r"D:\Games\add-on-archimesh-v1.2.5")
+```
+
+## Step 5
 
 Run:
 
@@ -77,34 +92,77 @@ Run:
 python patch_archimesh.py
 ```
 
-Restart Blender.
+The script will patch the addon and create backup files.
+
+## Step 6
+
+Compress the patched folder back into a ZIP.
+
+Make sure the ZIP contains the addon files directly.
+
+Correct:
+
+```
+add-on-archimesh-v1.2.5.zip
+│
+├── __init__.py
+├── achm_room_maker.py
+├── achm_door_maker.py
+└── ...
+```
+
+Not:
+
+```
+add-on-archimesh-v1.2.5.zip
+└── add-on-archimesh-v1.2.5
+    ├── __init__.py
+```
+
+## Step 7
+
+Open Blender.
+
+Go to:
+
+```
+Edit
+→ Preferences
+→ Extensions
+→ ▼
+→ Install from Disk
+```
+
+Select the patched ZIP.
+
+Enable Archimesh.
 
 Done.
 
 ---
 
-## Tested
+# Tested
 
 - Blender 5.2
 - Archimesh 1.2.5
 
-Verified working for:
+Verified working:
 
-- Room
-- Door
-- Window
-- Window Panel
-
----
-
-## Backup
-
-The patcher automatically creates `.bak` files before modifying anything.
+- ✅ Room
+- ✅ Door
+- ✅ Window
+- ✅ Window Panel
 
 ---
 
-## Disclaimer
+# Backups
 
-This project is not affiliated with the official Archimesh project.
+The patcher creates `.bak` files before modifying any source file.
 
-It is a compatibility patch for Blender 5.x.
+---
+
+# Disclaimer
+
+This project is an unofficial compatibility patch and is not affiliated with the official Archimesh project.
+
+If the issue is fixed in a future official release, this patch should no longer be necessary.
