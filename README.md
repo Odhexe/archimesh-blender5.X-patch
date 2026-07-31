@@ -169,4 +169,4 @@ If the issue is fixed in a future official release, this patch should no longer 
 
 ## Credits
 
-Compatibility patch developed by **Mr0dh**.
+Compatibility patch developed by **Odhexe**.
