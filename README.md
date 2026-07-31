@@ -166,3 +166,7 @@ The patcher creates `.bak` files before modifying any source file.
 This project is an unofficial compatibility patch and is not affiliated with the official Archimesh project.
 
 If the issue is fixed in a future official release, this patch should no longer be necessary.
+
+## Credits
+
+Compatibility patch developed by **Mr0dh**.
